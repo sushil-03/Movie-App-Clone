@@ -7,7 +7,8 @@ export default class Movies extends Component {
             hover:'',
             parr:[1], //this is for pagination
             currPage:1,
-            movies:[]
+            movies:[],
+            fav:[]
         }
     }
 
@@ -42,7 +43,7 @@ export default class Movies extends Component {
     }
     handleLeft = ()=>{
         //Editing  page
-        if(this.state.currPage!=1){
+        if(this.state.currPage!==1){
             let temparr=[]
             for(let i=1;i<=this.state.parr.length-1;i++){
                 temparr.push(i);
@@ -55,11 +56,31 @@ export default class Movies extends Component {
         
     }
     handleClick =(val)=>{
-        if(val!=this.state.currPage)
+        if(val!==this.state.currPage)
             this.setState({
                 currPage:val
             },this.changeMovies)
 
+    }
+    //Local Storage and handling data in local storage
+    handleFav =(movieObj)=>{
+        //getting data from local storage
+        let oldData= JSON.parse(localStorage.getItem("movies-app")|| "[]");
+        if(this.state.fav.includes(movieObj.id)){
+           oldData= oldData.filter((m)=>m.id!=movieObj.id)
+        }else{
+            oldData.push(movieObj)
+        }
+        localStorage.setItem("movies-app",JSON.stringify(oldData))
+        console.log(oldData);
+        this.handleFavState();
+    }
+    handleFavState =()=>{
+        let oldData= JSON.parse(localStorage.getItem("movies-app")|| "[]");
+        let temp = oldData.map((movie)=>movie.id)
+        this.setState({
+            fav:[...temp]
+        })
     }
    
     render() {
@@ -86,7 +107,7 @@ export default class Movies extends Component {
                                 <div className="button-wrapper" style={{display:'flex',width:'100%',justifyContent:'center'}}>
                                     {
                                         this.state.hover===movieObj.id && 
-                                    <a className="btn btn-primary movies-button">Add to Favourite</a>
+                                    <a className="btn btn-primary movies-button" onClick={()=>this.handleFav(movieObj)}>{this.state.fav.includes(movieObj.id)?"Remove from Favourite":"Add to Favourite"}</a>
                                     }
                                 </div>
                             </div>

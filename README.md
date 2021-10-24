@@ -31,3 +31,10 @@ We are using axios  for api
 
 
 
+In routing  i use
+Browser Router
+Route
+Switch
+exact
+Link
+Render
