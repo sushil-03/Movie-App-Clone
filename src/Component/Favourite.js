@@ -1,32 +1,129 @@
 import React, { Component } from 'react'
-import { movies} from './GetMovies'
+// import { movies} from './GetMovies'
 export default class Favourite extends Component {
     constructor(){
         super();
         this.state={
             genres:[],
-            currgenres:'All geners'
+            currgenres:'All geners', 
+            movies:[],
+            //for searching
+            currText:"",
+            limit:5,
+            currPage:1
         }
     }
+    componentDidMount(){
+        let genreids = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV',53:'Thriller',10752:'War',37:'Western',10765:'Sci-Fi & Fantasy'
+    };
+
+        let data=JSON.parse(localStorage.getItem('movies-app')||'[]');
+        let temp=[];
+        data.forEach((movieObj)=>{
+            if(!temp.includes(genreids[movieObj.genre_ids[0]])){
+                temp.push(genreids[movieObj.genre_ids[0]]);
+            }
+        })
+        console.log(data);
+        temp.unshift('All geners');
+        // console.log(stemp',temp);
+        this.setState({
+            genres:[...temp],
+            movies:[...data]
+
+        })
+    }
+    handleGenreChange=(genre)=>{
+        this.setState({
+            currgenres:genre
+        })
+    }
+      sortPopularityDesc=()=>{
+        let temp = this.state.movies;
+        temp.sort(function(objA,objB){
+            return objB.popularity-objA.popularity
+        })
+        this.setState({
+            movies:[...temp]
+        })
+    }
+    sortPopularityAsc=()=>{
+        let temp = this.state.movies;
+        temp.sort(function(objA,objB){
+            return objA.popularity-objB.popularity
+        })
+        this.setState({
+            movies:[...temp]
+        })
+    }
+
+    sortRatingDesc=()=>{
+        let temp = this.state.movies;
+        temp.sort(function(objA,objB){
+            return objB.vote_average-objA.vote_average
+        })
+        this.setState({
+            movies:[...temp]
+        })
+    }
+    sortRatingAsc=()=>{
+        let temp = this.state.movies;
+        temp.sort(function(objA,objB){
+            return objA.vote_average-objB.vote_average
+        })
+        this.setState({
+            movies:[...temp]
+        })
+    }
+
+    handlePageChange=(page)=>{
+        this.setState({
+            currPage:page
+        })
+    }
+    handleDelete=(id)=>{
+        let newarr = [];
+        newarr = this.state.movies.filter((movieObj)=>movieObj.id!=id)
+        this.setState({
+            movies:[...newarr]
+        })
+        localStorage.setItem("movies-app",JSON.stringify(newarr))
+    }
     render() {
-    const movie =movies.results
-    let genreids = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV',53:'Thriller',10752:'War',37:'Western'};
+        let genreids = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV',53:'Thriller',10752:'War',37:'Western'};
 
-    // Making  generes
-    let temp=[];
-    movie.forEach((movieObj)=>{
-        if(!temp.includes(genreids[movieObj.genre_ids[0]])){
-            temp.push(genreids[movieObj.genre_ids[0]]);
+        let filterarr = [];
+
+        if(this.state.currText===""){
+            filterarr=this.state.movies
         }
-    })
-    // this.setState({
-    //     genere:[...temp]
-    // })
-    //WHen all generes are click
+        else{
+            console.log(this.state.movies);
+            filterarr=this.state.movies.filter((movieObj)=>{
+                //  console.log(movieObj.original_title||movieObj.name,movieObj.id);
+                let title = movieObj.original_title||movieObj.name;
+                title=title.toLowerCase();
+                return title.includes(this.state.currText.toLowerCase())
+            })
+        }
 
-    temp.unshift('All geners');
+     
+        if(this.state.currgenres!=='All geners'){
+            filterarr =this.state.movies.filter((movieObj)=>genreids[movieObj.genre_ids[0]]===this.state.currgenres || genreids[movieObj.genre_ids[1]]===this.state.currgenres)
+        }
+        
+        let pages=Math.ceil(filterarr.length/this.state.limit);
+        let pagesArr=[]
+        for(let i=1;i<=pages;i++)
+            pagesArr.push(i)
 
-    console.log(temp);
+        
+            let si=(this.state.currPage -1)*this.state.limit;
+            let ei=si+this.state.limit
+            filterarr=filterarr.slice(si,ei);
+
+console.log(pagesArr);
+
         return (
             <>
             <div className="main">
@@ -35,24 +132,21 @@ export default class Favourite extends Component {
                     <ul className="list-group favourites-genres">
                         {
                         // this.state.genres.map((genre)=>(
-                        temp.map((genre)=>(
+                                            
+                       this.state.genres.map((genre)=>(
                             this.state.currgenres===genre?
                         <li class="list-group-item" style={{background:'#3f51b5',color:'white',fontWeight:'bold'}} >{genre}</li> :
-                        <li class="list-group-item"  style={{color:'#3f51b5'}}>{genre}</li> 
+                        <li class="list-group-item"  style={{color:'#3f51b5'}} onClick={()=>this.handleGenreChange(genre)}>{genre}</li> 
 
                         ))
                         }
-                        {/* <li className="list-group-item">All Genres</li>
-                        <li className="list-group-item">Action</li>
-                        <li className="list-group-item">Action</li>
-                        <li className="list-group-item">Action</li>
-                        <li className="list-group-item">Action</li> */}
+                        
                     </ul>
                     </div>
                     <div className="col-9 favourites-table">
                         <div className="row ">
-                            <input type="text"className="input-group-text col" placeholder="Search"/>
-                            <input type="number" className="input-group-text col" placeholder="Max Limit" />
+                        <input type="text" className="input-group-text col" placeholder="Search" value={this.state.currText} onChange={(e)=>this.setState({currText:e.target.value})}/>
+                            <input type="number" className="input-group-text col" placeholder="Max Limit" value={this.state.limiit} onChange={(e)=>this.setState({limit:e.target.value})} />
                         </div>
                         <div className="row">
                         <table class="table">
@@ -60,21 +154,21 @@ export default class Favourite extends Component {
                                     <tr>
                                         <th scope="col">Title</th>
                                         <th scope="col">Genre</th>
-                                        <th scope="col">Popularity</th>
-                                        <th scope="col">Rating</th>
+                                       
+                                        <th scope="col"><i class="fas fa-sort-up" onClick={this.sortPopularityDesc}/>Popularity<i class="fas fa-sort-down" onClick={this.sortPopularityAsc}></i></th>
+                                        <th scope="col"><i class="fas fa-sort-up" onClick={this.sortRatingDesc}></i>Rating<i class="fas fa-sort-down" onClick={this.sortRatingAsc}></i></th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        movie.map((movieObj)=>(
+                                       filterarr.map((movieObj)=>(
                                             <tr>
-                                            <td><img src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_path}`} alt={movieObj.title} style={{width:'5rem'}}/> {movieObj.original_title}</td>
-
+                                            <td><img src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_path}`} alt={movieObj.title} style={{width:'5rem'}}/> {movieObj.original_title||movieObj.name}</td>
                                                 <td>{genreids[movieObj.genre_ids[0]]}</td>
                                                 <td>{movieObj.popularity}</td>
                                                 <td>{movieObj.vote_average}</td>
-                                                <td><button type="button" class="btn btn-danger" >Delete</button></td>
+                                                <td><button type="button" class="btn btn-danger" onClick={()=>this.handleDelete(movieObj.id)}>Delete</button></td>
                                             </tr>
 
                                         ))
@@ -85,11 +179,11 @@ export default class Favourite extends Component {
                         </div>
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
-                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                {
+                                    pagesArr.map((page)=>(
+                                        <li class="page-item"><a class="page-link" onClick={()=>this.handlePageChange(page)}>{page}</a></li>
+                                    )) 
+                                }
                             </ul>
                             </nav>
                     </div>

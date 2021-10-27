@@ -67,7 +67,7 @@ export default class Movies extends Component {
         //getting data from local storage
         let oldData= JSON.parse(localStorage.getItem("movies-app")|| "[]");
         if(this.state.fav.includes(movieObj.id)){
-           oldData= oldData.filter((m)=>m.id!=movieObj.id)
+           oldData = oldData.filter((m)=>m.id!=movieObj.id)
         }else{
             oldData.push(movieObj)
         }
@@ -102,7 +102,7 @@ export default class Movies extends Component {
                             return(
                                  <div className="card movies-card" onMouseEnter={()=>this.setState({hover:movieObj.id })}  onMouseLeave={()=>this.setState({hover:''})}>
                                 <img src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_path}`}  style={{height:'40vh'}} alt={movieObj.title} className="card-img-top banner-img"/>
-                                <h5 className="card-title movies-title">{movieObj.original_title}</h5>
+                                <h5 className="card-title movies-title">{movieObj.original_title||movieObj.name}</h5>
                                 {/* <p className="card-text movies-text">{movieObj.overview}</p> */}
                                 <div className="button-wrapper" style={{display:'flex',width:'100%',justifyContent:'center'}}>
                                     {
