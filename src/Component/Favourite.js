@@ -122,7 +122,6 @@ export default class Favourite extends Component {
             let ei=si+this.state.limit
             filterarr=filterarr.slice(si,ei);
 
-console.log(pagesArr);
 
         return (
             <>
@@ -165,7 +164,7 @@ console.log(pagesArr);
                                        filterarr.map((movieObj)=>(
                                             <tr>
                                             <td><img src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_path}`} alt={movieObj.title} style={{width:'5rem'}}/> {movieObj.original_title||movieObj.name}</td>
-                                                <td>{genreids[movieObj.genre_ids[0]]}</td>
+                                                <td>{genreids[movieObj.genre_ids[0]]|| genreids[movieObj.genre_ids[1]]}</td>
                                                 <td>{movieObj.popularity}</td>
                                                 <td>{movieObj.vote_average}</td>
                                                 <td><button type="button" class="btn btn-danger" onClick={()=>this.handleDelete(movieObj.id)}>Delete</button></td>
