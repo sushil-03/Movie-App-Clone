@@ -37,27 +37,27 @@
   }
 }
 
-.banner-card{
-    width: 100vw;
-    margin-top: 1vh;
-    margin-bottom: 3vh;
-    position: relative;
-    height: 70vh;
-    color: white;
+.banner-card {
+  width: 100vw;
+  margin-bottom: 3vh;
+  position: relative;
+  height: 70vh;
+  border: none;
+  color: white;
 }
 
-.banner-img{
+.banner-img {
   height: 70vh;
   width: 100%;
 }
 
-.banner-title{
+.banner-title {
   position: absolute;
   top: 45vh;
   left: 5vw;
 }
 
-.banner-text{
+.banner-text {
   position: absolute;
   top: 55vh;
   left: 5vw;
@@ -66,69 +66,68 @@
   margin-right: 5vw;
 }
 
-.movies-list{
+.movies-list {
   display: flex;
   flex-wrap: wrap;
   padding: 1rem;
   justify-content: center;
 }
 
-.movies-card{
+.movies-card {
   width: 20vw;
   margin: 1rem;
   color: white;
   position: relative;
 }
 
-.movies-title{
+.movies-title {
   position: absolute;
   top: 1rem;
   left: 1rem;
-
 }
 
-.movies-button{
+.movies-button {
   position: absolute;
   bottom: 2rem;
 }
 /* style={{height:'40vh',width:'20vw'}} */
-.movies-img{
+.movies-img {
   height: 40vh;
   width: 20vw;
 }
 
-.favourites-genres{
+.favourites-genres {
   padding: 3rem;
 }
 
-.favourites-table{
+.favourites-table {
   padding: 3rem;
   overflow: auto;
 }
 
-@media screen and (max-width:400px){
-  .banner-card{
-    height:30vh;
-  }
-  .banner-img{
+@media screen and (max-width: 400px) {
+  .banner-card {
     height: 30vh;
   }
-  .banner-title{
-    top: 12vh;
-    left: 5vw
+  .banner-img {
+    height: 30vh;
   }
-  .banner-text{
+  .banner-title {
+    top: 12vh;
+    left: 5vw;
+  }
+  .banner-text {
     top: 17vh;
     left: 5vw;
   }
-  .movies-card{
+  .movies-card {
     width: 40vw;
     margin: 0.1rem;
   }
-  .movies-button{
+  .movies-button {
     width: 80%;
   }
-  .movies-img{
+  .movies-img {
     width: 40vw;
   }
 }
